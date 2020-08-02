@@ -21,17 +21,25 @@ namespace YoutubeDataScraping
     {
         static void Main(string[] args)
         {
-            string URL = "https://www.youtube.com/user/TheCaptainKickass";
+            // CHANNEL INPUT
+            string URL = "https://www.youtube.com/channel/UCnxQ8o9RpqxGF2oLHcCn9VQ";
+
+            // OTHER SETTINGS / INPUTS
+            bool ignoreCaps = true;
+
+
 
             List<string> videoTitles = ReadVideoTitles(URL);
 
-            Hashtable wordsTable = BuildWordsTable(videoTitles);
+            Hashtable wordsTable = BuildWordsTable(videoTitles, ignoreCaps);
 
             List<WordObj> sortedWordCountList = SortWordsTable(wordsTable);
 
+            int i = 1;
             foreach(WordObj o in sortedWordCountList)
             {
-                Console.WriteLine("{0}: {1}", o.Word, o.Count);
+                Console.WriteLine("{0}. {1}: ({2})", i, o.Word, o.Count);
+                i++;
             }
 
         }
@@ -44,7 +52,7 @@ namespace YoutubeDataScraping
 
             try
             {
-                var yt = new YouTubeService(new BaseClientService.Initializer() { ApiKey = "AIzaSyAeld26NsXf9QnSEzA1u-A4JWHGS_WHOc4" });
+                var yt = new YouTubeService(new BaseClientService.Initializer() { ApiKey = Data.APIKey });
                 var channelsListRequest = yt.Channels.List("contentDetails");
 
                 //determine user / channel identifier to be used
@@ -93,7 +101,6 @@ namespace YoutubeDataScraping
                             //Console.WriteLine("Video Title ={0} ", playlistItem.Snippet.Title);  
                             //Console.Write("Video Descriptions = {0}", playlistItem.Snippet.Description);  
                             //Console.WriteLine("Video ImageUrl ={0} ", playlistItem.Snippet.Thumbnails.High.Url);  
-                            //Console.WriteLine("----------------------");  
 
                             videoTitleList.Add(playlistItem.Snippet.Title);
                         }
@@ -112,7 +119,7 @@ namespace YoutubeDataScraping
             return videoTitleList;
         }
 
-        static Hashtable BuildWordsTable(List<string> videoTitleList)
+        static Hashtable BuildWordsTable(List<string> videoTitleList, bool ignoreCaps)
         {
             Console.WriteLine("Building word table...");
 
@@ -124,6 +131,8 @@ namespace YoutubeDataScraping
                 foreach(string word in words)
                 {
                     string wordAdjusted = RemoveSpecialCharacters(word);
+
+                    if (ignoreCaps) wordAdjusted = wordAdjusted.ToLower();
 
                     if(wordAdjusted.Length > 0)
                     {
@@ -155,7 +164,6 @@ namespace YoutubeDataScraping
 
             foreach (object key in table.Keys)
             {
-                //Console.WriteLine(String.Format("{0}: {1}", key, table[key]));
                 objList.Add(new WordObj((string)key, (int)table[key]));
             }
 

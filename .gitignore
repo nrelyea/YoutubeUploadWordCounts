@@ -1,0 +1,13 @@
+
+*.dll
+*.json
+*.pdb
+*.exe
+obj/Debug/netcoreapp3.0/YoutubeDataScraping.AssemblyInfo.cs
+*.cache
+obj/Debug/netcoreapp3.0/YoutubeDataScraping.csproj.FileListAbsolute.txt
+obj/Debug/netcoreapp3.0/YoutubeDataScraping.csproj.CopyComplete
+*.props
+*.targets
+*.csproj
+Data.cs
